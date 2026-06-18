@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Modern | SMPN2BK</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <div class="login-container">
+        <img src="logo sekolah.png" alt="Logo Sekolah" class="school-logo">
+        
+        <h2><span>Aplikasi Ujian Semi Online</span><br>SMP Negeri 2 Bungku</h2>
+        
+        <form id="loginForm" onsubmit="prosesLogin(event)">
+            
+            
+            <div class="input-group text-input">
+                <input type="text" id="login-username" name="username" class="input-field" placeholder="contoh: budi" 
+                       oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '')" required>
+                <label for="username">Username</label>
+            </div>
+
+            <div class="input-group text-input">
+                <input type="password" id="login-password" name="password" class="input-field" placeholder="********" required>
+                <label for="password">Password</label>
+            </div>
+
+            <div class="input-group">
+                <select id="role" name="role" class="input-field select-field" required>
+                    <option value="" disabled selected>Pilih akses Anda</option>
+                    <option value="admin">Admin</option>
+                    <option value="guru">Guru</option>
+                </select>
+                <label for="role">Role</label>
+            </div>
+
+            <button type="submit" class="login-btn">Masuk Sekarang</button>
+            
+            <div class="extra-links" style="margin-top: 20px; text-align: center; font-size: 14px;">
+                <p style="color: #666;">Belum punya akun? 
+                    <a href="register.html" style="color: #4a90e2; font-weight: 600; text-decoration: none; transition: all 0.3s;">
+                        Daftar Akun Baru
+                    </a>
+                </p>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        function prosesLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value.trim().toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            // 1. TAMPILKAN LOADING MODERN
+            Swal.fire({
+                title: 'Mohon Tunggu',
+                text: 'Sedang memproses autentikasi...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const dummyEmail = username + "@smpn2bk.local";
+
+            firebase.auth().signInWithEmailAndPassword(dummyEmail, password)
+                .then((userCredential) => {
+                    // Tarik data role untuk redirect
+                    firebase.database().ref('users/' + username).once('value')
+                        .then((snapshot) => {
+                            if (snapshot.exists()) {
+                                const data = snapshot.val();
+                                
+                                if (data.role === 'guru' && data.status !== 'approved') {
+                                    // ALERT MODERN UNTUK AKUN PENDING
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Akun Belum Aktif',
+                                        text: 'Akun Anda masih menunggu persetujuan dari Admin.',
+                                        confirmButtonColor: '#764ba2'
+                                    });
+                                    firebase.auth().signOut();
+                                    return;
+                                }
+
+                                // ALERT BERHASIL LOGIN (OTOMATIS PINDAH)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Login Berhasil',
+                                    text: `Selamat datang kembali, ${data.nama || username}!`,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    if (data.role === 'admin') {
+                                        window.location.href = 'admin_dashboard.html';
+                                    } else if (data.role === 'guru') {
+                                        window.location.href = 'guru_dashboard.html';
+                                    } else {
+                                        window.location.href = 'siswa_dashboard.html';
+                                    }
+                                });
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Login',
+                                    text: 'Data pengguna tidak ditemukan di database.',
+                                    confirmButtonColor: '#667eea'
+                                });
+                            }
+                        });
+                })
+                .catch((error) => {
+                    // ALERT GAGAL LOGIN
+                    let pesanError = "Terjadi kesalahan: " + error.message;
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                        pesanError = "Username atau Password yang Anda masukkan salah.";
+                    }
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Login',
+                        text: pesanError,
+                        confirmButtonColor: '#667eea'
+                    });
+                });
+        }
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+    // Ganti dengan konfigurasi dari Firebase Console Anda
+    const firebaseConfig = {
+    apiKey: "AIzaSyBS8wBXqe_OZFRXrWQTP3B93RXxNaZ7vFg",
+    authDomain: "aplikasi-ujian-sekolah-smp2bk.firebaseapp.com",
+    databaseURL: "https://aplikasi-ujian-sekolah-smp2bk-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "aplikasi-ujian-sekolah-smp2bk",
+    storageBucket: "aplikasi-ujian-sekolah-smp2bk.firebasestorage.app",
+    messagingSenderId: "422205736440",
+    appId: "1:422205736440:web:b291132c904f58ddd3820d",
+    measurementId: "G-FRKS6C55ZF"
+    };
+    
+    // Inisialisasi Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | SMPN2BK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin_style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <aside class="sidebar glass-panel">
+        <div class="sidebar-header">
+            <img src="logo sekolah.png" alt="Logo" class="sidebar-logo">
+            <h3>Administrator</h3>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" id="link-dashboard" class="active" onclick="switchMenu('dashboard')">Dashboard Utama</a></li>
+            <li><a href="#" id="link-pengguna" onclick="switchMenu('pengguna')">Daftar Pengguna</a></li>
+            <li><a href="#" class="text-danger" onclick="prosesLogout()">🚪 Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+
+        <div id="view-dashboard" class="view-section active-view">
+            <header class="top-header glass-panel" style="margin-bottom: 20px;">
+                <h2>Selamat Datang, Admin! 👋</h2>
+                <p>Ini adalah ringkasan data sekolah kita saat ini.</p>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-card glass-panel">
+                    <div class="stat-info">
+                        <h3>Total Guru</h3>
+                        <h2 id="stat-total-guru">0</h2>
+                    </div>
+                    <div class="stat-icon">👨‍🏫</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-info">
+                        <h3>Total Siswa</h3>
+                        <h2 id="stat-total-siswa">0</h2>
+                    </div>
+                    <div class="stat-icon">🎓</div>
+                </div>
+                <div class="stat-card glass-panel">
+                    <div class="stat-info">
+                        <h3>Total Kelas</h3>
+                        <h2 id="stat-total-kelas">0</h2>
+                    </div>
+                    <div class="stat-icon">🏫</div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-pengguna" class="view-section" style="display: none;">
+            <header class="top-header glass-panel" style="margin-bottom: 20px;">
+                <h2>Manajemen Daftar Pengguna 👥</h2>
+                <p>Kelola data guru dan siswa di sini.</p>
+            </header>
+
+            <section class="action-toolbar glass-panel" style="margin-bottom: 20px;">
+                <div class="action-group">
+                    <button class="btn btn-primary" onclick="openModal('addStudentModal')">➕ Tambah Siswa</button>
+                    <button class="btn btn-secondary">📂 Import Siswa</button>
+                </div>
+                <div class="action-group">
+                    <button class="btn btn-danger">🗑️ Kosongkan Guru</button>
+                    <button class="btn btn-danger">🗑️ Kosongkan Siswa</button>
+                </div>
+            </section>
+            <section class="table-section glass-panel" style="margin-bottom: 25px; border-left: 5px solid #f39c12;">
+                <div class="table-header">
+                    <h3 style="color: #d35400;">Menunggu Persetujuan ⏳</h3>
+                    <p style="font-size: 13px; color: #666;">Akun baru yang mendaftar dan membutuhkan verifikasi Anda.</p>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Lengkap</th>
+                                <th>Pengajuan Role</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-pending">
+                            <tr id="pending-1">
+                                <td>Ahmad Fauzi, S.Kom</td>
+                                <td><span style="background: #e3f2fd; color: #1976d2; padding: 3px 8px; border-radius: 4px; font-size: 12px;">Guru</span></td>
+                                <td>
+                                    <button class="btn-sm btn-success" onclick="setujuiAkun('pending-1', 'Ahmad Fauzi')">✅ Setujui</button>
+                                    <button class="btn-sm btn-danger" onclick="tolakAkun('pending-1', 'Ahmad Fauzi')">❌ Tolak</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="table-section glass-panel" style="margin-bottom: 20px;">
+                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Data Guru</h3>
+                    <input type="text" placeholder="🔍 Cari nama/NIP..." class="search-input">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>No</th><th>Nama Guru</th><th>NIP / ID</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="tabel-guru">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="table-section glass-panel">
+                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Data Siswa</h3>
+                    <input type="text" id="search-siswa" placeholder="🔍 Cari nama/NISN..." class="search-input" oninput="filterSiswa()">
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>No</th><th>Nama Siswa</th><th>NISN</th><th>Kelas</th><th>Aksi</th></tr>
+                        </thead>
+                        <tbody id="table-siswa-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <div id="accountModal" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <h3>Informasi Akun</h3>
+            <p class="modal-subtitle" id="modalName">Nama Pengguna</p>
+            <div class="account-details">
+                <div class="detail-group"><label>Username</label><input type="text" id="modalUsername" readonly></div>
+                <div class="detail-group"><label>Password</label><input type="text" id="modalPassword" readonly></div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="closeAccountModal()">Tutup</button>
+        </div>
+    </div>
+    
+
+    <div id="addStudentModal" class="modal-overlay">
+        <div class="modal-box glass-panel">
+            <h3>Tambah Data Siswa</h3>
+            <p class="modal-subtitle">Masukkan informasi siswa baru</p>
+            
+            <form id="formTambahSiswa" onsubmit="simpanDataSiswa(event)"> 
+                <div class="account-details">
+                    <div class="detail-group">
+                        <label>Nama Siswa</label>
+                        <input type="text" id="input-nama-siswa" placeholder="Contoh: Andi Saputra" required>
+                    </div>
+                    <div class="detail-group">
+                        <label>NISN</label>
+                        <input type="number" id="input-nisn" placeholder="Masukkan NISN" required>
+                    </div>
+                    <div class="detail-group">
+                        <label>Kelas</label>
+                        <select class="modal-select" id="select-kelas" required>
+                            <option value="" disabled selected>Pilih Kelas</option>
+                        </select>
+                    </div>
+                    <div class="detail-group">
+                        <label>Agama</label>
+                        <select class="modal-select" id="input-agama" required>
+                            <option value="" disabled selected>Pilih Agama</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Kristen">Kristen</option>
+                            <option value="Katolik">Katolik</option>
+                            <option value="Hindu">Hindu</option>
+                            <option value="Buddha">Buddha</option>
+                            <option value="Konghucu">Konghucu</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('addStudentModal')">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="admin_script.js"></script>
+</body>
+</html>

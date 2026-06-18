@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Guru | SMPN2BK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="guru_style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <aside class="sidebar glass-panel">
+        <div class="sidebar-header">
+            <img src="logo sekolah.png" alt="Logo" class="sidebar-logo">
+            <h3><span>Halaman Guru</span></h3>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Bank Soal & Jadwal</a></li>
+            <li><a href="#" class="text-danger" onclick="prosesLogout()">🚪 Logout</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="top-header glass-panel">
+            <h2 id="welcome-message">Memuat data... 👨‍🏫</h2>
+            <p>Kelola bank soal dan jadwal ujian untuk kelas Anda di sini.</p>
+        </header>
+
+        <section class="action-toolbar glass-panel" style="margin-bottom: 20px;">
+            <div class="action-group">
+                <button class="btn btn-primary" onclick="openModal('addExamModal')">➕ Tambah Bank Soal & Jadwal</button>
+            </div>
+            <div class="action-group">
+                <input type="text" id="input-cari-kelas" placeholder="🔍 Cari berdasarkan kelas (Cth: 7A)..." class="search-input" onkeyup="cariKelas()">
+            </div>
+        </section>
+
+        <section class="exam-grid" id="exam-container">
+            
+        </section>
+        
+        <div id="addExamModal" class="modal-overlay">
+            <div class="modal-box glass-panel modal-large">
+                <h3 style="margin-bottom: 5px; font-size: 20px;">Tambah Bank Soal & Jadwal</h3>
+                <p class="modal-subtitle">Silakan lengkapi detail ujian di bawah ini</p>
+                
+                <form id="formTambahUjian" onsubmit="simpanUjian(event)">
+                    <div class="form-grid">
+                        
+                        <div class="detail-group full-width">
+                            <label>1. Nama Mata Pelajaran</label>
+                            <input type="text" id="input-mapel" class="modal-input" placeholder="Contoh: Matematika Wajib" required>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>2. Kelas Sasaran (Pilih 1 atau lebih)</label>
+                            <div id="container-kelas" class="modal-input" style="max-height: 120px; overflow-y: auto; background: #fff; padding: 10px;">
+                                <span style="color: #888; font-size: 13px;">Memuat data kelas...</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>3. Tipe Ujian</label>
+                            <select class="modal-select" id="select-tipe-ujian" onchange="toggleAgama(this.value)" required>
+                                <option value="" disabled selected>Pilih Tipe</option>
+                                <option value="Umum">Umum</option>
+                                <option value="Agama">Agama</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-group" id="group-agama" style="display: none;">
+                            <label>3.1. Pilihan Agama</label>
+                            <select class="modal-select" id="select-agama">
+                                <option value="" disabled selected>Pilih Agama</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-group full-width" style="margin-top: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <label style="margin: 0; font-size: 14px;">4. Komposisi & Tipe Soal</label>
+                                <button type="button" class="btn-sm btn-info" onclick="tambahTipeSoal()">➕ Tambah Tipe</button>
+                            </div>
+                            
+                            <div id="komposisi-container">
+                                <div class="komposisi-row" id="row-1">
+                                    <select class="modal-select" style="flex: 2;" onchange="ubahInputKunci(this)" required>
+                                        <option value="" disabled selected>Pilih Tipe</option>
+                                        <option value="PG">Pilihan Ganda</option>
+                                        <option value="PG Kompleks">PG Kompleks</option>
+                                        <option value="Isian Singkat">Isian Singkat</option>
+                                        <option value="Mencocokkan">Mencocokkan</option>
+                                        <option value="Essay">Essay / Uraian</option>
+                                    </select>
+                                    <input type="text" class="modal-input input-no" placeholder="No (Cth: 1-20)" style="flex: 1.5;" required>
+                                    <select class="modal-select select-metode" style="flex: 1.5; display: none;">
+                                        <option value="Di Kertas">Di Kertas</option>
+                                        <option value="Di Aplikasi">Di Aplikasi</option>
+                                    </select>
+                                    <input type="text" class="modal-input input-kunci" placeholder="Kunci (Tanpa spasi)" style="flex: 3;" oninput="validasiSpasi(this)">
+                                    
+                                    <input type="number" class="modal-input input-poin-max" placeholder="Poin Max" style="flex: 1; display: none;" min="1" title="Poin Maksimal per Soal">
+                                    
+                                    <input type="number" class="modal-input input-bobot" placeholder="Bobot %" style="flex: 1.2;" required min="1" max="100" title="Persentase Nilai">
+                                    
+                                    <button type="button" class="btn-sm btn-danger" onclick="hapusBaris('row-1')" style="padding: 10px;" title="Hapus Baris">❌</button>
+                                </div>
+                            </div>
+                            <small style="color: #888; font-size: 11px; margin-top: 5px;">*Contoh: No (1-20), Kunci (A, B, C, D...), Poin Max hanya untuk Essay & Isian Singkat</small>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>5. Waktu Mulai Ujian</label>
+                            <input type="datetime-local" id="input-waktu-mulai" class="modal-input" required>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>6. Waktu Selesai Ujian</label>
+                            <input type="datetime-local" id="input-waktu-selesai" class="modal-input" required>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 25px;">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('addExamModal')">Batal</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">Simpan & Buat Token</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="editExamModal" class="modal-overlay">
+            <div class="modal-box glass-panel modal-large">
+                <h3 style="margin-bottom: 5px; font-size: 20px;">Edit Bank Soal & Jadwal</h3>
+                <p class="modal-subtitle">Silakan perbarui detail ujian di bawah ini</p>
+                
+                <form id="formEditUjian" onsubmit="simpanEditUjian(event)">
+                    <input type="hidden" id="edit-exam-id">
+                    
+                    <div class="form-grid">
+                        <div class="detail-group full-width">
+                            <label>1. Nama Mata Pelajaran</label>
+                            <input type="text" id="edit-input-mapel" class="modal-input" required>
+                        </div>
+
+                        <div class="detail-group">
+                            <label>2. Kelas Sasaran</label>
+                            <input type="text" id="edit-input-kelas" class="modal-input" readonly style="background: #f5f5f5; color: #888;" title="Kelas tidak bisa diubah.">
+                        </div>
+
+                        <div class="detail-group">
+                            <label>3. Tipe Ujian</label>
+                            <select class="modal-select" id="edit-select-tipe-ujian" onchange="toggleEditAgama(this.value)" required>
+                                <option value="Umum">Umum</option>
+                                <option value="Agama">Agama</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-group" id="edit-group-agama" style="display: none;">
+                            <label>3.1. Pilihan Agama</label>
+                            <select class="modal-select" id="edit-select-agama">
+                                <option value="" disabled>Pilih Agama</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                            </select>
+                        </div>
+
+                        <div class="detail-group full-width">
+                            <label>4. Waktu Mulai Ujian</label>
+                            <input type="datetime-local" id="edit-input-waktu-mulai" class="modal-input" required>
+                        </div>
+
+                        <div class="detail-group full-width">
+                            <label>5. Waktu Selesai Ujian</label>
+                            <input type="datetime-local" id="edit-input-waktu-selesai" class="modal-input" required>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 25px;">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('editExamModal')">Batal</button>
+                        <button type="submit" class="btn btn-primary" style="flex: 1;">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div id="viewResultsModal" class="modal-overlay">
+            <div class="modal-box glass-panel modal-large" style="max-width: 850px;">
+                <h3 style="margin-bottom: 5px; font-size: 20px;">📊 Hasil Ujian Siswa</h3>
+                <p class="modal-subtitle">Berikut adalah daftar jawaban dan status pengerjaan siswa</p>
+                
+                <div style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #eee; border-radius: 8px;">
+                    <table class="data-table" style="margin-top: 0;">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama Siswa</th>
+                                <th>Status</th>
+                                <th>Nilai Akhir</th> <th>Rekap Jawaban</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-hasil-body">
+                            </tbody>
+                    </table>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('viewResultsModal')">Tutup Halaman</button>
+                </div>
+            </div>
+        </div>
+        <div id="koreksiModal" class="modal-overlay" style="display: none;">
+            <div class="modal-box glass-panel modal-large" style="max-height: 90vh; display: flex; flex-direction: column;">
+                <h3 id="koreksi-nama-siswa">Koreksi Jawaban</h3>
+                <div id="koreksi-container" style="overflow-y: auto; flex: 1; padding: 10px; border: 1px solid #eee; margin: 15px 0;">
+                    </div>
+                <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('koreksiModal')">Batal</button>
+                    <button type="button" class="btn btn-primary" onclick="simpanKoreksi()">Simpan Nilai Akhir</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script src="guru_script.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>
+</body>
+</html>

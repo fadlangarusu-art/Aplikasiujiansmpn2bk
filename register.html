@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun | Aplikasi Sekolah Kita</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <div class="login-container">
+        <img src="logo sekolah.png" alt="Logo Sekolah" class="school-logo">
+        
+        <h2 style="margin-bottom: 20px;"><span>Daftar</span> Akun Baru</h2>
+        <p style="font-size: 13px; color: #666; margin-bottom: 25px;">Akun Anda akan diverifikasi oleh Admin sebelum bisa digunakan.</p>
+
+        <form id="registerForm" onsubmit="prosesRegister(event)">
+            
+            <div class="input-group text-input">
+                <input type="text" id="reg-nama" class="input-field" placeholder="Contoh: Budi Santoso, S.Pd" required>
+                <label>Nama Lengkap</label>
+            </div>
+
+            <div class="input-group text-input">
+                <input type="text" id="reg-nip" class="input-field" placeholder="Contoh: 198001012005011001" required>
+                <label>NIP</label>
+            </div>
+
+            <div class="input-group text-input">
+                <input type="text" id="reg-username" class="input-field" placeholder="Contoh: budisatria" 
+                       oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, '')" 
+                       pattern="[a-z0-9]+" 
+                       title="Username hanya boleh menggunakan huruf kecil dan angka, tanpa spasi!" required>
+                <label>Username</label>
+            </div>
+
+            <div class="input-group text-input">
+                <input type="password" id="reg-password" class="input-field" placeholder="Minimal 6 karakter" required minlength="6">
+                <label>Password</label>
+            </div>
+
+            <button type="submit" class="login-btn">Daftar Sekarang</button>
+        </form>
+
+        <div class="extra-links">
+            <p>Sudah punya akun? <a href="index.html">Masuk di sini</a></p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        // Inisialisasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBS8wBXqe_OZFRXrWQTP3B93RXxNaZ7vFg",
+            authDomain: "aplikasi-ujian-sekolah-smp2bk.firebaseapp.com",
+            databaseURL: "https://aplikasi-ujian-sekolah-smp2bk-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "aplikasi-ujian-sekolah-smp2bk",
+            storageBucket: "aplikasi-ujian-sekolah-smp2bk.firebasestorage.app",
+            messagingSenderId: "422205736440",
+            appId: "1:422205736440:web:b291132c904f58ddd3820d",
+            measurementId: "G-FRKS6C55ZF"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Fungsi Proses Register
+        function prosesRegister(event) {
+            event.preventDefault();
+
+            const nama = document.getElementById('reg-nama').value;
+            const nip = document.getElementById('reg-nip').value.trim(); 
+            const username = document.getElementById('reg-username').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+            
+            // Set role secara otomatis menjadi 'guru'
+            const role = 'guru'; 
+
+            // 1. Buat Dummy Email dari Username
+            const dummyEmail = username + "@smpn2bk.local"; 
+
+            // TAMBAHKAN efek loading ini SEBELUM firebase.auth().createUserWithEmailAndPassword dipanggil
+            Swal.fire({
+                title: 'Mendaftar...',
+                text: 'Sedang membuat akun baru Anda.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // 2. Daftarkan ke Firebase Auth
+            firebase.auth().createUserWithEmailAndPassword(dummyEmail, password)
+                .then((userCredential) => {
+                    // Ambil UID dari Auth (tetap bagus untuk disimpan sebagai referensi di dalam data)
+                    const uid = userCredential.user.uid;
+
+                    // 3. Simpan data ke Database menggunakan USERNAME sebagai ID
+                    return firebase.database().ref('users/' + username).set({
+                        auth_uid: uid, // Simpan UID Auth agar datanya saling terhubung
+                        nama: nama,
+                        nip: nip,
+                        username: username,
+                        email: dummyEmail,
+                        role: role,
+                        status: 'pending' // Status untuk diverifikasi admin
+                    });
+                })
+                .then(() => {
+                    Swal.fire({
+                        title: 'Pendaftaran Berhasil!',
+                        text: 'Silakan hubungi Admin sekolah untuk persetujuan akun Anda.',
+                        icon: 'success',
+                        confirmButtonColor: '#667eea'
+                    }).then(() => {
+                        firebase.auth().signOut().then(() => {
+                            window.location.href = 'index.html';
+                        });
+                    });
+                })
+                .catch((error) => {
+                    if(error.code === 'auth/email-already-in-use') {
+                        Swal.fire('Pendaftaran Gagal', 'Username sudah digunakan. Silakan pilih username lain.', 'error');
+                    } else {
+                        Swal.fire('Pendaftaran Gagal', error.message, 'error');
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

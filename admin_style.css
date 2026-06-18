@@ -1,0 +1,386 @@
+/* --- CSS GLOBAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f0f8ff;
+    background-image: 
+        radial-gradient(at 80% 0%, hsla(210, 100%, 93%, 1) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(160, 100%, 95%, 1) 0px, transparent 50%);
+    display: flex;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* --- GLASS PANEL (Efek Kaca) --- */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 260px;
+    margin: 20px;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.sidebar-logo {
+    max-height: 60px;
+    margin-bottom: 10px;
+}
+
+.sidebar-header h3 {
+    font-size: 20px;
+    color: #333;
+}
+
+.sidebar-header h3 span {
+    color: #4a90e2;
+}
+
+.nav-links {
+    list-style: none;
+}
+
+.nav-links li {
+    margin-bottom: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    padding: 12px 15px;
+    border-radius: 10px;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    background: rgba(74, 144, 226, 0.1);
+    color: #4a90e2;
+}
+
+.text-danger {
+    color: #e74c3c !important;
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    flex: 1;
+    padding: 20px 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.top-header {
+    padding: 20px 30px;
+}
+
+.top-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.top-header p {
+    color: #777;
+    font-size: 14px;
+}
+
+/* --- STATS GRID (Visualisasi Data) --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-info h3 {
+    font-size: 14px;
+    color: #777;
+    font-weight: 500;
+}
+
+.stat-info h2 {
+    font-size: 32px;
+    color: #333;
+    margin-top: 5px;
+}
+
+.stat-icon {
+    font-size: 40px;
+}
+
+/* --- ACTION TOOLBAR --- */
+.action-toolbar {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.action-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* --- TOMBOL (Buttons) --- */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-secondary {
+    background: white;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.btn-danger {
+    background: #ffeaea;
+    color: #e74c3c;
+    border: 1px solid #ffcccc;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* --- TABEL --- */
+.table-section {
+    padding: 25px;
+}
+
+.table-header {
+    margin-bottom: 20px;
+}
+
+.table-header h3 {
+    font-size: 18px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f8faff;
+    color: #555;
+    font-weight: 600;
+}
+
+tr:hover td {
+    background-color: #fdfdff;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: 0.2s;
+}
+
+.btn-info {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.btn-info:hover { background: #bbdefb; }
+
+.btn-danger.btn-sm {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.btn-danger.btn-sm:hover { background: #ffcdd2; }
+
+/* --- MODAL (Pop-up Lihat Akun) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: none; /* Sembunyikan default */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-box {
+    width: 350px;
+    padding: 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.modal-box h3 { margin-bottom: 5px; }
+.modal-subtitle { color: #888; font-size: 14px; margin-bottom: 20px; }
+
+.account-details {
+    text-align: left;
+}
+
+.detail-group {
+    margin-bottom: 15px;
+}
+
+.detail-group label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.detail-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    color: #333;
+    font-size: 14px;
+    outline: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsif untuk HP */
+@media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: auto; margin: 10px; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px;}
+    .nav-links { display: none; /* Sembunyikan menu di HP sementara */ }
+    .main-content { padding: 10px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .action-toolbar { flex-direction: column; }
+}
+/* --- TAMBAHAN UNTUK SEARCH & PAGINASI --- */
+.search-input {
+    padding: 8px 15px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    font-size: 13px;
+    outline: none;
+    width: 250px;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 13px;
+    color: #666;
+}
+
+/* Memperbaiki Scroll Tabel agar Sticky Header Berfungsi */
+.table-container {
+    max-height: 350px; /* Batas tinggi tabel */
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- TAMBAHAN STYLE UNTUK DROPDOWN DI DALAM MODAL --- */
+.modal-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    color: #333;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 15px top 50%;
+    background-size: 10px auto;
+}
+
+.modal-select:focus {
+    border-color: #4a90e2;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.2);
+}

@@ -1,0 +1,181 @@
+/* --- CSS Global --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f0f8ff; 
+    background-image: 
+        radial-gradient(at 80% 20%, hsla(210, 100%, 93%, 1) 0px, transparent 50%),
+        radial-gradient(at 20% 80%, hsla(160, 100%, 95%, 1) 0px, transparent 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ubah 'height' menjadi 'min-height' */
+    overflow-y: auto; /* Ubah 'overflow: hidden' menjadi 'overflow-y: auto' */
+    padding: 30px 15px; /* Tambahkan padding agar kotak login tidak menabrak tepi layar saat di-scroll */
+}
+/* --- Kartu Login (Glassmorphism effect) --- */
+.login-container {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 30px 50px 40px 50px; /* Disesuaikan sedikit padding atasnya */
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    width: 100%;
+    max-width: 400px;
+    transform: translateY(20px);
+    animation: fadeInSlide 0.6s ease forwards;
+    opacity: 0;
+    text-align: center; /* Memastikan semua konten di tengah */
+}
+
+@keyframes fadeInSlide {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- TAMBAHAN STYLE UNTUK LOGO --- */
+.school-logo {
+    max-height: 80px; /* Atur tinggi maksimal logo agar tidak terlalu besar */
+    width: auto; /* Menjaga proporsi gambar */
+    margin: 0 auto 15px auto; /* Ketengah secara horizontal, beri jarak bawah 15px */
+    display: block; /* Agar margin auto berfungsi */
+    object-fit: contain; /* Memastikan gambar muat tanpa terpotong */
+}
+
+/* --- Elemen Teks --- */
+.login-container h2 {
+    /* text-align: center; <-- Hapus ini karena sudah diatur di .login-container */
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #333;
+    letter-spacing: 1px;
+    font-size: 20px; /* Sedikit dikecilkan agar seimbang dengan logo */
+}
+
+.login-container h2 span {
+    color: #4a90e2; /* Aksen biru */
+}
+
+/* --- Input Group & Field --- */
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+    text-align: left; /* Kembalikan teks input ke kiri */
+}
+
+.input-group label {
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0 5px;
+    font-size: 12px;
+    color: #888;
+    border-radius: 4px;
+    pointer-events: none;
+    transition: 0.3s;
+    z-index: 1; /* Pastikan label di atas garis input */
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+    color: #333;
+    background-color: #fff;
+}
+
+.input-field:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+}
+
+.input-field:focus + label {
+    color: #4a90e2;
+    font-weight: 600;
+}
+
+/* --- Custom Dropdown Role --- */
+.select-field {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    color: #888;
+    background-color: #fff;
+}
+
+.select-field:focus {
+    color: #333;
+}
+
+/* Panah kustom untuk dropdown */
+.input-group::after {
+    content: '▼';
+    font-size: 10px;
+    color: #aaa;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Menghilangkan panah kustom untuk input teks/password */
+.input-group.text-input::after {
+    content: '';
+}
+
+/* --- Tombol Login --- */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+}
+
+.login-btn:active {
+    transform: translateY(1px);
+}
+
+/* --- Link Bawah --- */
+.extra-links {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+}
+
+.extra-links a {
+    color: #4a90e2;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.extra-links a:hover {
+    text-decoration: underline;
+    color: #764ba2;
+}
